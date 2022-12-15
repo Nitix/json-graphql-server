@@ -3,7 +3,7 @@ import { Kind } from 'graphql/language';
 
 const ISO_DATE_STRING_PATTERN = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/;
 
-export const isISODateString = (value) => {
+export const isISODateString = (value: unknown): value is string => {
     if (typeof value !== 'string') return false;
     if (!ISO_DATE_STRING_PATTERN.test(value)) return false;
     const d = new Date(value);

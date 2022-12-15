@@ -1,18 +1,20 @@
 import {
     GraphQLBoolean,
-    GraphQLInputObjectType,
-    GraphQLString,
-    GraphQLInt,
     GraphQLFloat,
-    GraphQLList,
     GraphQLID,
+    GraphQLInputFieldConfigMap,
+    GraphQLInputObjectType,
+    GraphQLInt,
+    GraphQLList,
+    GraphQLString,
 } from 'graphql';
-import getFieldsFromEntities from './getFieldsFromEntities';
-import getValuesFromEntities from './getValuesFromEntities';
-import getTypeFromValues from './getTypeFromValues';
 import { getTypeFromKey } from '../nameConverter';
+import { EntityData } from './../type';
+import getFieldsFromEntities from './getFieldsFromEntities';
+import getTypeFromValues from './getTypeFromValues';
+import getValuesFromEntities from './getValuesFromEntities';
 
-const getRangeFiltersFromEntities = (entities) => {
+const getRangeFiltersFromEntities = (entities: EntityData[]) => {
     const fieldValues = getValuesFromEntities(entities);
     return Object.keys(fieldValues).reduce((fields, fieldName) => {
         const fieldType = getTypeFromValues(
@@ -35,7 +37,7 @@ const getRangeFiltersFromEntities = (entities) => {
             fields[`${fieldName}_neq`] = { type: fieldType };
         }
         return fields;
-    }, {});
+    }, {} as GraphQLInputFieldConfigMap);
 };
 
 /**
@@ -94,7 +96,10 @@ const getRangeFiltersFromEntities = (entities) => {
  * //     }),
  * // }
  */
-export default (data) =>
+
+export default (
+    data: Record<string, EntityData[]>
+): Record<string, GraphQLInputObjectType> =>
     Object.keys(data).reduce(
         (types, key) =>
             Object.assign({}, types, {

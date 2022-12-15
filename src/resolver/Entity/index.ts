@@ -51,21 +51,22 @@ import { isRelationshipField } from '../../relationships';
  *         },
  *     }
  */
-export default (entityName, data) => {
+export default (entityName: string, data: any) => {
     const entityFields = Object.keys(getFieldsFromEntities(data[entityName]));
     const manyToOneResolvers = entityFields.filter(isRelationshipField).reduce(
         (resolvers, fieldName) =>
             Object.assign({}, resolvers, {
-                [getRelatedType(fieldName)]: (entity) =>
+                [getRelatedType(fieldName)]: (entity: any) =>
                     data[getRelatedKey(fieldName)].find(
-                        (relatedRecord) => relatedRecord.id == entity[fieldName]
+                        (relatedRecord: any) =>
+                            relatedRecord.id == entity[fieldName]
                     ),
             }),
         {}
     );
     const relatedField = getReverseRelatedField(entityName); // 'posts' => 'post_id'
 
-    const hasReverseRelationship = (entityName) =>
+    const hasReverseRelationship = (entityName: any) =>
         Object.keys(getFieldsFromEntities(data[entityName])).includes(
             relatedField
         );
@@ -74,9 +75,9 @@ export default (entityName, data) => {
     const oneToManyResolvers = entities.filter(hasReverseRelationship).reduce(
         (resolvers, entityName) =>
             Object.assign({}, resolvers, {
-                [getRelationshipFromKey(entityName)]: (entity) =>
+                [getRelationshipFromKey(entityName)]: (entity: any) =>
                     data[entityName].filter(
-                        (record) => record[relatedField] == entity.id
+                        (record: any) => record[relatedField] == entity.id
                     ),
             }),
         {}

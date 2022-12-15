@@ -1,3 +1,4 @@
+import { EntityData } from './../type';
 import { pluralize } from 'inflection';
 import GraphQLJSON from 'graphql-type-json';
 
@@ -13,20 +14,20 @@ import { getTypeFromKey } from '../nameConverter';
 import DateType from '../introspection/DateType';
 import hasType from '../introspection/hasType';
 
-const getQueryResolvers = (entityName, data) => ({
+const getQueryResolvers = (entityName: string, data: EntityData[]) => ({
     [`all${pluralize(entityName)}`]: all(data),
     [`_all${pluralize(entityName)}Meta`]: meta(data),
     [entityName]: single(data),
 });
 
-const getMutationResolvers = (entityName, data) => ({
+const getMutationResolvers = (entityName: string, data: EntityData[]) => ({
     [`create${entityName}`]: create(data),
     [`createMany${entityName}`]: createMany(data),
     [`update${entityName}`]: update(data),
     [`remove${entityName}`]: remove(data),
 });
 
-export default (data) => {
+export default (data: any) => {
     return Object.assign(
         {},
         {

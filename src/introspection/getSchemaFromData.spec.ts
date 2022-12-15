@@ -1,5 +1,6 @@
 import {
     GraphQLID,
+    GraphQLInputObjectType,
     GraphQLInt,
     GraphQLList,
     GraphQLNonNull,
@@ -35,7 +36,7 @@ const data = {
     ],
 };
 
-const PostType = new GraphQLObjectType({
+const PostType: GraphQLObjectType = new GraphQLObjectType({
     name: 'Post',
     fields: () => ({
         id: { type: new GraphQLNonNull(GraphQLID) },
@@ -105,34 +106,43 @@ const QueryType = new GraphQLObjectType({
 test('creates one type per data type', () => {
     const typeMap = getSchemaFromData(data).getTypeMap();
     expect(typeMap['Post'].name).toEqual(PostType.name);
-    expect(Object.keys(typeMap['Post'].getFields())).toEqual(
-        Object.keys(PostType.getFields())
-    );
+    expect(
+        Object.keys((typeMap['Post'] as GraphQLInputObjectType).getFields())
+    ).toEqual(Object.keys(PostType.getFields()));
     expect(typeMap['User'].name).toEqual(UserType.name);
-    expect(Object.keys(typeMap['User'].getFields())).toEqual(
-        Object.keys(UserType.getFields())
-    );
+    expect(
+        Object.keys((typeMap['User'] as GraphQLInputObjectType).getFields())
+    ).toEqual(Object.keys(UserType.getFields()));
 });
 
 test('creates one field per relationship', () => {
     const typeMap = getSchemaFromData(data).getTypeMap();
-    expect(Object.keys(typeMap['Post'].getFields())).toContain('User');
+    expect(
+        Object.keys((typeMap['Post'] as GraphQLInputObjectType).getFields())
+    ).toContain('User');
 });
 
 test('creates one field per reverse relationship', () => {
     const typeMap = getSchemaFromData(data).getTypeMap();
-    expect(Object.keys(typeMap['User'].getFields())).toContain('Posts');
+    expect(
+        Object.keys((typeMap['User'] as GraphQLInputObjectType).getFields())
+    ).toContain('Posts');
 });
 
 test('creates three query fields per data type', () => {
+    // @ts-expect-error test only
     const queries = getSchemaFromData(data).getQueryType().getFields();
+    // @ts-expect-error test only
     expect(queries['Post'].type.name).toEqual(PostType.name);
     expect(queries['Post'].args).toEqual([
         {
             defaultValue: undefined,
-            description: null,
+            description: undefined,
             name: 'id',
             type: new GraphQLNonNull(GraphQLID),
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
     ]);
     expect(queries['allPosts'].type.toString()).toEqual('[Post]');
@@ -148,13 +158,17 @@ test('creates three query fields per data type', () => {
     expect(queries['allPosts'].args[4].type.toString()).toEqual('PostFilter');
     expect(queries['_allPostsMeta'].type.toString()).toEqual('ListMetadata');
 
+    // @ts-expect-error test only
     expect(queries['User'].type.name).toEqual(UserType.name);
     expect(queries['User'].args).toEqual([
         {
             defaultValue: undefined,
-            description: null,
+            description: undefined,
             name: 'id',
             type: new GraphQLNonNull(GraphQLID),
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
     ]);
     expect(queries['allUsers'].type.toString()).toEqual('[User]');
@@ -172,102 +186,147 @@ test('creates three query fields per data type', () => {
 });
 
 test('creates three mutation fields per data type', () => {
+    // @ts-expect-error test only
     const mutations = getSchemaFromData(data).getMutationType().getFields();
+    // @ts-expect-error test only
     expect(mutations['createPost'].type.name).toEqual(PostType.name);
     expect(mutations['createPost'].args).toEqual([
         {
             name: 'title',
             type: new GraphQLNonNull(GraphQLString),
             defaultValue: undefined,
-            description: null,
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
         {
             name: 'views',
             type: new GraphQLNonNull(GraphQLInt),
             defaultValue: undefined,
-            description: null,
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
         {
             name: 'user_id',
             type: new GraphQLNonNull(GraphQLID),
             defaultValue: undefined,
-            description: null,
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
     ]);
+    // @ts-expect-error test only
     expect(mutations['updatePost'].type.name).toEqual(PostType.name);
     expect(mutations['updatePost'].args).toEqual([
         {
             name: 'id',
             type: new GraphQLNonNull(GraphQLID),
             defaultValue: undefined,
-            description: null,
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
         {
             name: 'title',
             type: GraphQLString,
             defaultValue: undefined,
-            description: null,
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
         {
             name: 'views',
             type: GraphQLInt,
             defaultValue: undefined,
-            description: null,
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
         {
             name: 'user_id',
             type: GraphQLID,
             defaultValue: undefined,
-            description: null,
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
     ]);
+    // @ts-expect-error test only
     expect(mutations['removePost'].type.name).toEqual(PostType.name);
     expect(mutations['removePost'].args).toEqual([
         {
             name: 'id',
             type: new GraphQLNonNull(GraphQLID),
             defaultValue: undefined,
-            description: null,
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
     ]);
+    // @ts-expect-error test only
     expect(mutations['createUser'].type.name).toEqual(UserType.name);
     expect(mutations['createUser'].args).toEqual([
         {
             name: 'name',
             type: new GraphQLNonNull(GraphQLString),
             defaultValue: undefined,
-            description: null,
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
     ]);
+    // @ts-expect-error test only
     expect(mutations['updateUser'].type.name).toEqual(UserType.name);
     expect(mutations['updateUser'].args).toEqual([
         {
             name: 'id',
             type: new GraphQLNonNull(GraphQLID),
             defaultValue: undefined,
-            description: null,
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
         {
             name: 'name',
             type: GraphQLString,
             defaultValue: undefined,
-            description: null,
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
     ]);
+    // @ts-expect-error test only
     expect(mutations['removeUser'].type.name).toEqual(UserType.name);
     expect(mutations['removeUser'].args).toEqual([
         {
             defaultValue: undefined,
-            description: null,
             name: 'id',
             type: new GraphQLNonNull(GraphQLID),
+            description: undefined,
+            extensions: undefined,
+            astNode: undefined,
+            deprecationReason: undefined,
         },
     ]);
 });
 
 test('creates the mutation *Input type for createMany', () => {
+    // @ts-expect-error test only
     const mutations = getSchemaFromData(data).getMutationType().getFields();
-    const createManyPostInputType = mutations['createManyPost'].args[0].type;
+    const createManyPostInputType = mutations['createManyPost'].args[0]
+        .type as GraphQLList<any>;
     expect(createManyPostInputType.toString()).toEqual('[PostInput]');
     expect(createManyPostInputType.ofType.getFields()).toEqual({
         title: {
@@ -305,6 +364,7 @@ test('pluralizes and capitalizes correctly', () => {
         ],
         categories: [{ id: 1, name: 'foo' }],
     };
+    // @ts-expect-error test only
     const queries = getSchemaFromData(data).getQueryType().getFields();
     expect(queries).toHaveProperty('Foot');
     expect(queries).toHaveProperty('Category');

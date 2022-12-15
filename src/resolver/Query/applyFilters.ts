@@ -1,8 +1,8 @@
-export default (entityData = [], filter = {}) => {
+export default (entityData: any[] = [], filter: Record<string, any> = {}) => {
     let items = [...entityData];
 
     if (filter.ids) {
-        items = items.filter((d) => filter.ids.some((id) => id == d.id));
+        items = items.filter((d) => filter.ids.some((id: any) => id == d.id));
     } else {
         Object.keys(filter)
             .filter((key) => key !== 'q')
@@ -42,13 +42,16 @@ export default (entityData = [], filter = {}) => {
                     items = items.filter((item) => {
                         if (Array.isArray(item[key])) {
                             // array filter and array item value: where all items in values
-                            return filter[key].every((v) =>
-                                item[key].some((itemValue) => itemValue == v)
+                            return filter[key].every((v: any) =>
+                                item[key].some(
+                                    (itemValue: any) => itemValue == v
+                                )
                             );
                         }
                         // where item in values
                         return (
-                            filter[key].filter((v) => v == item[key]).length > 0
+                            filter[key].filter((v: any) => v == item[key])
+                                .length > 0
                         );
                     });
                 } else {

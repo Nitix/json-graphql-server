@@ -1,3 +1,5 @@
+import { GraphQLFieldConfigMap } from 'graphql';
+import { EntityData } from './../type';
 import getTypeFromValues from './getTypeFromValues';
 import getValuesFromEntities from './getValuesFromEntities';
 
@@ -26,7 +28,10 @@ import getValuesFromEntities from './getValuesFromEntities';
  * //    user_id: { type: new GraphQLNonNull(GraphQLString) },
  * // };
  */
-export default (entities, checkRequired = true) => {
+export default <TSource, TContext>(
+    entities: EntityData[],
+    checkRequired = true
+): GraphQLFieldConfigMap<TSource, TContext> => {
     const fieldValues = getValuesFromEntities(entities);
     const nbValues = entities.length;
     return Object.keys(fieldValues).reduce((fields, fieldName) => {
@@ -40,5 +45,5 @@ export default (entities, checkRequired = true) => {
             ),
         };
         return fields;
-    }, {});
+    }, {} as GraphQLFieldConfigMap<TSource, TContext>);
 };

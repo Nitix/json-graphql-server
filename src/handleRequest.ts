@@ -1,3 +1,4 @@
+import { EntityData } from './type';
 import { graphql } from 'graphql';
 import schemaBuilder from './schemaBuilder';
 
@@ -40,12 +41,19 @@ import schemaBuilder from './schemaBuilder';
  * GraphQLClientServer(data);
  * GraphQLClientServer(data, 'http://localhost:8080/api/graphql');
  */
-export default function (data) {
+export default function (data: Record<string, EntityData[]>) {
     const schema = schemaBuilder(data);
-    return (url, opts = {}) => {
+    return (
+        url:
+            | {
+                  requestBody?: string;
+              }
+            | string,
+        opts: { body: string } = { body: '' }
+    ) => {
         let body = opts.body;
 
-        if (url.requestBody) {
+        if (!(typeof url === 'string') && url.requestBody) {
             body = url.requestBody;
         }
 

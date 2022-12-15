@@ -16,6 +16,7 @@ import getTypesFromData from './getTypesFromData';
 import getFilterTypesFromData from './getFilterTypesFromData';
 import { isRelationshipField } from '../relationships';
 import { getRelatedType } from '../nameConverter';
+import { EntityData } from '../type';
 
 /**
  * Get a GraphQL schema from data
@@ -76,12 +77,12 @@ import { getRelatedType } from '../nameConverter';
  * //     removeUser(id: ID!): Boolean
  * // }
  */
-export default (data) => {
+export default (data: Record<string, EntityData[]>) => {
     const types = getTypesFromData(data);
     const typesByName = types.reduce((types, type) => {
         types[type.name] = type;
         return types;
-    }, {});
+    }, {} as Record<string, GraphQLObjectType>);
 
     const filterTypesByName = getFilterTypesFromData(data);
 
@@ -120,7 +121,7 @@ export default (data) => {
                 },
             };
             return fields;
-        }, {}),
+        }, {} as Record<string, any>),
     });
 
     const mutationType = new GraphQLObjectType({
@@ -133,12 +134,15 @@ export default (data) => {
                         type:
                             fieldName !== 'id' &&
                             typeFields[fieldName].type instanceof GraphQLNonNull
-                                ? typeFields[fieldName].type.ofType
+                                ? (
+                                      typeFields[fieldName]
+                                          .type as GraphQLNonNull<any>
+                                  ).ofType
                                 : typeFields[fieldName].type,
                     });
                     return f;
                 },
-                {}
+                {} as Record<string, any>
             );
             const { id, ...createFields } = typeFields;
 
@@ -149,7 +153,7 @@ export default (data) => {
                     delete f[fieldName].resolve;
                     return f;
                 },
-                {}
+                {} as Record<string, any>
             );
 
             const createManyInputType = new GraphQLInputObjectType({
@@ -180,7 +184,7 @@ export default (data) => {
                 },
             };
             return fields;
-        }, {}),
+        }, {} as Record<string, any>),
     });
 
     const schema = new GraphQLSchema({
@@ -208,7 +212,7 @@ extend type ${type} { ${relType}: ${relType} }
 extend type ${relType} { ${rel}: [${type}] }`;
             });
         return ext;
-    }, '');
+    }, '' as string);
 
     return schemaExtension
         ? extendSchema(schema, parse(schemaExtension))

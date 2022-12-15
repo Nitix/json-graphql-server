@@ -34,7 +34,7 @@ const data = {
     ],
 };
 
-let agent;
+let agent: request.SuperTest<request.Test>;
 
 beforeAll(() => {
     const app = express();
@@ -42,7 +42,7 @@ beforeAll(() => {
     agent = request(app);
 });
 
-const gqlAgent = (query, variables) =>
+const gqlAgent = (query: any, variables?: any) =>
     agent.post('/').send({
         query,
         variables,

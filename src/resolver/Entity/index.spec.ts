@@ -21,9 +21,11 @@ const data = {
 };
 
 test('provides many to one relationship reolvers', () => {
+    // @ts-expect-error TS(2339): Property 'User' does not exist on type '{}'.
     const { User } = entity('posts', data);
     expect(User(data.posts[0])).toEqual({ id: 123, name: 'John Doe' });
     expect(User(data.posts[1])).toEqual({ id: 456, name: 'Jane Doe' });
+    // @ts-expect-error TS(2339): Property 'Post' does not exist on type '{}'.
     const { Post } = entity('comments', data);
     expect(Post(data.comments[0])).toEqual({
         id: 1,
@@ -43,6 +45,7 @@ test('provides many to one relationship reolvers', () => {
 });
 
 test('provides one to many relationship reolvers', () => {
+    // @ts-expect-error TS(2339): Property 'Comments' does not exist on type '{}'.
     const { Comments } = entity('posts', data);
     expect(Comments(data.posts[0])).toEqual([
         { id: 987, post_id: 1, body: 'Consectetur adipiscing elit' },
@@ -52,6 +55,7 @@ test('provides one to many relationship reolvers', () => {
         { id: 998, post_id: 2, body: 'Sunt in culpa qui officia' },
     ]);
     expect(Comments(data.posts[2])).toEqual([]);
+    // @ts-expect-error TS(2339): Property 'Posts' does not exist on type '{}'.
     const { Posts } = entity('users', data);
     expect(Posts(data.users[0])).toEqual([
         { id: 1, title: 'Lorem Ipsum', user_id: 123 },
